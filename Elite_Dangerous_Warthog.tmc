@@ -1,0 +1,147 @@
+include "target.tmh"
+int main()
+{
+	Configure(&HCougar, MODE_EXCLUDED);
+	Configure(&T16000, MODE_EXCLUDED);
+	Configure(&T16000L, MODE_EXCLUDED);
+	Configure(&LMFD, MODE_EXCLUDED);
+	Configure(&RMFD, MODE_EXCLUDED);
+	Configure(&TFRPRudder, MODE_EXCLUDED);
+	Configure(&TWCSThrottle, MODE_EXCLUDED);
+	if(Init(&EventHandle)) return 1;
+	
+// Initial Axis Mapping
+//  Joystick Axis
+	MapAxis(&Joystick, JOYX, DX_X_AXIS, AXIS_NORMAL, MAP_ABSOLUTE);
+	MapAxis(&Joystick, JOYY, DX_Y_AXIS, AXIS_NORMAL, MAP_ABSOLUTE);
+	
+//  Throttle Axis
+	MapAxis(&Throttle, SCX, DX_XROT_AXIS, AXIS_NORMAL, MAP_ABSOLUTE);
+	MapAxis(&Throttle, SCY, DX_YROT_AXIS, AXIS_NORMAL, MAP_ABSOLUTE);
+	MapAxis(&Throttle, THR_RIGHT, DX_Z_AXIS, AXIS_NORMAL, MAP_ABSOLUTE);
+	MapAxis(&Throttle, THR_LEFT, DX_ZROT_AXIS, AXIS_NORMAL, MAP_ABSOLUTE);
+	MapAxis(&Throttle, THR_FC, DX_SLIDER_AXIS, AXIS_NORMAL, MAP_ABSOLUTE);
+	
+// Initial Curves
+	SetSCurve(&Joystick, JOYX, 0, 0, 0, 0, 0);
+	SetSCurve(&Joystick, JOYY, 0, 0, 0, 0, 0);
+	SetSCurve(&Throttle, SCX, 0, 0, 0, 0, 0);
+	SetSCurve(&Throttle, SCY, 0, 0, 0, 0, 0);
+	SetSCurve(&Throttle, THR_RIGHT, 0, 0, 0, 0, 0);
+	SetSCurve(&Throttle, THR_LEFT, 0, 0, 0, 0, 0);
+	SetSCurve(&Throttle, THR_FC, 0, 0, 0, 0, 0);
+	
+	//SetNormalCurves();
+	//SetCombatCurves();
+
+
+// Misc Setup
+	SetKBRate(32, 50);
+	SetKBLayout(KB_ENG);
+	SetShiftButton(0, 0, 0, 0, 0, 0);
+	
+// Keybindings
+//  Joystick Bindings
+	//MapKeyIOUMD(&Joystick, TG1, MOUSE_LEFT, MOUSE_LEFT, MOUSE_LEFT, MOUSE_LEFT, MOUSE_LEFT, MOUSE_LEFT); // Trigger
+	MapKey(&Joystick, TG1, MOUSE_LEFT);
+	MapKey(&Joystick, S2, MOUSE_RIGHT);
+	MapKey(&Joystick, S3, PULSE+USB[24]);
+	MapKey(&Joystick, S4, EXEC("SetCombatMode();"));  // Set combat mode when pinky trigger is pulled
+	MapKeyR(&Joystick, S4, EXEC("SetNormalMode();"));  // Return to normal mode when pinky trgger is released
+	MapKey(&Joystick, S1, PULSE+USB[17]);
+	MapKey(&Joystick, H2U, PULSE+USB[23]);
+	MapKey(&Joystick, H2R, PULSE+USB[10]);
+	MapKey(&Joystick, H2D, PULSE+USB[11]);
+	MapKey(&Joystick, H2L, PULSE+USB[28]);
+	MapKey(&Joystick, H3U, PULSE+USB[31]);
+	MapKey(&Joystick, H3R, PULSE+USB[33]);
+	MapKey(&Joystick, H3D, PULSE+USB[32]);
+	MapKey(&Joystick, H3L, PULSE+USB[30]);
+	MapKey(&Joystick, H4U, USB[26]);
+	MapKey(&Joystick, H4R, USB[7]);
+	MapKey(&Joystick, H4D, USB[22]);
+	MapKey(&Joystick, H4L, USB[4]);
+	MapKey(&Joystick, H4P, USB[44]);
+	MapKey(&Joystick, H1U, USB[82]);
+	MapKey(&Joystick, H1D, USB[81]);
+	MapKey(&Joystick, H1L, USB[80]);
+	MapKey(&Joystick, H1R, USB[79]);
+	
+//  Throttle Bindings
+	MapKey(&Throttle, SC, USB[43]);
+	MapKey(&Throttle, MSP, PULSE+USB[28]);
+	MapKey(&Throttle, MSR, PULSE+USB[26]);
+	MapKey(&Throttle, MSL, PULSE+USB[22]);
+	MapKey(&Throttle, SPDF, DX20);
+	MapKey(&Throttle, SPDB, DX20);
+	MapKey(&Throttle, BSF, PULSE+USB[52]);
+	MapKey(&Throttle, BSB, PULSE+USB[51]);
+	MapKey(&Throttle, CHF, PULSE+USB[25]);
+	MapKey(&Throttle, CHB, PULSE+USB[6]);
+	MapKey(&Throttle, LTB, PULSE+USB[28]);
+	MapKey(&Throttle, EFLNORM, PULSE+USB[76]);
+	MapKey(&Throttle, EFRNORM, PULSE+USB[73]);
+	MapKey(&Throttle, APUON, PULSE+USB[12]);
+	MapKey(&Throttle, LDGH, ESC);
+	MapKey(&Throttle, EACON, PULSE+USB[74]);
+	MapKey(&Throttle, RDRNRM, PULSE+USB[77]);
+	MapKey(&Throttle, APENG, USB[13]);
+	MapKey(&Throttle, APALT, PULSE+USB[15]);
+	MapKey(&Throttle, EOLIGN, PULSE+USB[42]);
+	MapKey(&Throttle, EORIGN, PULSE+USB[18]);
+	MapKey(&Throttle, EFLOVER, PULSE+USB[76]);
+	MapKey(&Throttle, EFROVER, PULSE+USB[73]);
+	MapKey(&Throttle, APUOFF, PULSE+USB[12]);
+	MapKey(&Throttle, EACOFF, PULSE+USB[74]);
+	MapKey(&Throttle, RDRDIS, PULSE+USB[77]);
+	MapKey(&Throttle, EOLNORM, PULSE+USB[16]);
+	MapKey(&Throttle, EORNORM, PULSE+USB[18]);
+	MapKey(&Throttle, FLAPM, PULSE+USB[18]);
+	MapKey(&Throttle, APAH, PULSE+USB[15]);
+	MapKey(&Throttle, CSU, USB[21]);
+	MapKey(&Throttle, CSD, USB[9]);
+	MapKey(&Throttle, CSR, USB[8]);
+	MapKey(&Throttle, CSL, USB[20]);
+	MapKey(&Throttle, FLAPD, USB[29]);
+	MapKey(&Throttle, PSB, EXEC("SetCombatMode();"));
+	MapKey(&Throttle, PSM, EXEC("SetNormalMode();"));
+}
+
+int SetNormalCurves()
+{
+	SetSCurve(&Joystick, JOYX, 0, 0, 0, 0, 0);
+	SetSCurve(&Joystick, JOYY, 0, 0, 0, 0, 0);
+	SetSCurve(&Throttle, SCX, 0, 0, 0, 0, 0);
+	SetSCurve(&Throttle, SCY, 0, 0, 0, 0, 0);
+	SetSCurve(&Throttle, THR_RIGHT, 0, 0, 0, 0, 0);
+	SetSCurve(&Throttle, THR_LEFT, 0, 0, 0, 0, 0);
+	SetSCurve(&Throttle, THR_FC, 0, 0, 0, 0, 0);
+}
+
+int SetCombatCurves()
+{
+	SetSCurve(&Joystick, JOYX, 0, 0, 0, 3, 0);
+	SetSCurve(&Joystick, JOYY, 0, 0, 0, 3, 0);
+	SetSCurve(&Throttle, SCX, 0, 0, 0, 0, 0);
+	SetSCurve(&Throttle, SCY, 0, 0, 0, 0, 0);
+	SetSCurve(&Throttle, THR_RIGHT, 0, 0, 0, 0, 0);
+	SetSCurve(&Throttle, THR_LEFT, 0, 0, 0, 0, 0);
+	SetSCurve(&Throttle, THR_FC, 0, 0, 0, 0, 0);
+}
+
+int SetNormalMode()
+{
+	SetNormalCurves();
+	ActKey(USB[29]);
+}
+
+int SetCombatMode()
+{
+	SetCombatCurves();
+	ActKey(KEYON+USB[29]);
+}
+
+int EventHandle(int type, alias o, int x)
+{
+	DefaultMapping(&o, x);
+}
