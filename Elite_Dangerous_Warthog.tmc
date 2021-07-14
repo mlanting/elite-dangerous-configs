@@ -1,4 +1,7 @@
 include "target.tmh"
+
+char flight_assist=1;
+
 int main()
 {
 	Configure(&HCougar, MODE_EXCLUDED);
@@ -7,6 +10,7 @@ int main()
 	Configure(&LMFD, MODE_EXCLUDED);
 	Configure(&RMFD, MODE_EXCLUDED);
 	Configure(&TFRPRudder, MODE_EXCLUDED);
+	Configure(&TFRPHARudder, MODE_EXCLUDED);
 	Configure(&TWCSThrottle, MODE_EXCLUDED);
 	if(Init(&EventHandle)) return 1;
 	
@@ -46,8 +50,8 @@ int main()
 	MapKey(&Joystick, TG1, MOUSE_LEFT);
 	MapKey(&Joystick, S2, MOUSE_RIGHT);
 	MapKey(&Joystick, S3, PULSE+USB[24]);
-	MapKey(&Joystick, S4, EXEC("SetCombatMode();"));  // Set combat mode when pinky trigger is pulled
-	MapKeyR(&Joystick, S4, EXEC("SetNormalMode();"));  // Return to normal mode when pinky trgger is released
+	MapKey(&Joystick, S4, EXEC("PinkyTriggerAction();")); //"SetCombatMode();"));  // Set combat mode when pinky trigger is pulled
+	MapKeyR(&Joystick, S4, EXEC("PinkyTriggerAction();")); //"SetNormalMode();"));  // Return to normal mode when pinky trgger is released
 	MapKey(&Joystick, S1, PULSE+USB[17]);
 	MapKey(&Joystick, H2U, PULSE+USB[23]);
 	MapKey(&Joystick, H2R, PULSE+USB[10]);
@@ -120,8 +124,8 @@ int SetNormalCurves()
 
 int SetCombatCurves()
 {
-	SetSCurve(&Joystick, JOYX, 0, 0, 0, 3, 0);
-	SetSCurve(&Joystick, JOYY, 0, 0, 0, 3, 0);
+	SetSCurve(&Joystick, JOYX, 0, 0, 0, 2, 0); // SetSCurve(&Joystick, JOYX, 0, 0, 0, 3, 0);
+	SetSCurve(&Joystick, JOYY, 0, 0, 0, 2, 0); // SetSCurve(&Joystick, JOYY, 0, 0, 0, 3, 0);
 	SetSCurve(&Throttle, SCX, 0, 0, 0, 0, 0);
 	SetSCurve(&Throttle, SCY, 0, 0, 0, 0, 0);
 	SetSCurve(&Throttle, THR_RIGHT, 0, 0, 0, 0, 0);
@@ -129,16 +133,27 @@ int SetCombatCurves()
 	SetSCurve(&Throttle, THR_FC, 0, 0, 0, 0, 0);
 }
 
+int PinkyTriggerAction()
+{
+	if(flight_assist){
+		SetCombatMode();
+	} else {
+		SetNormalMode();
+	}
+}
+
 int SetNormalMode()
 {
 	SetNormalCurves();
 	ActKey(USB[29]);
+	flight_assist=1;
 }
 
 int SetCombatMode()
 {
 	SetCombatCurves();
 	ActKey(KEYON+USB[29]);
+	flight_assist=0;
 }
 
 int EventHandle(int type, alias o, int x)
